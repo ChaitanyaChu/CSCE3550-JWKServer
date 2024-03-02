@@ -14,9 +14,9 @@ import uuid
 import jwt
 
 # Define a custom request handler class inheriting from BaseHTTPRequestHandler
-class RequestHandler(BaseHTTPRequestHandler):
+class CustomRequestHandler(BaseHTTPRequestHandler):
     # Storage for JSON Web Key Set (JWKS)
-    JWKS = {"keys": []}
+    jwks_data = {"keys": []}
 
     # HTTP methods handling
     def do_PUT(self):
@@ -46,7 +46,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             # Respond with JWKS when requested
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(json.dumps(self.JWKS, indent=1).encode("UTF-8"))
+            self.wfile.write(json.dumps(self.jwks_data, indent=1).encode("UTF-8"))
             return
         else:
             # Respond with Method Not Allowed status code for other paths
@@ -90,7 +90,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 "e": base64url_encode(bytes_from_int(public_key.public_numbers().e)).decode("UTF-8"),
             }
             if expiry_time > datetime.now(tz=timezone.utc):
-                self.JWKS["keys"].append(jwk)
+                self.jwks_data["keys"].append(jwk)
             return
         else:
             # Respond with Method Not Allowed status code for other paths
@@ -104,7 +104,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         return private_key
 
 # Create an HTTP server on localhost and port 8080
-http_server = HTTPServer(("", 8080), RequestHandler)
+http_server = HTTPServer(("", 8080), CustomRequestHandler)
 print("HTTP Server is running on localhost port 8080!")
 try:
     http_server.serve_forever()  # Run the server indefinitely
