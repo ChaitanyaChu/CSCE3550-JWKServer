@@ -105,7 +105,7 @@ class CustomRequestHandler(BaseHTTPRequestHandler):
 
 # Create an HTTP server on localhost and port 8080
 http_server = HTTPServer(("", 8080), CustomRequestHandler)
-print("HTTP Server is running on localhost port 8080!")
+print("Server is running on port 8080")
 try:
     http_server.serve_forever()  # Run the server indefinitely
 except KeyboardInterrupt:
