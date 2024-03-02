@@ -1,0 +1,2 @@
+Install flask:
+        Mac Terminal command: pip install Flask
